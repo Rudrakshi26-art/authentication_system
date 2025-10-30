@@ -9,7 +9,7 @@ class FaceRecognitionSystem:
     def __init__(self, root):
         self.root = root
         self.students = []  # Shared student data
-        self.student_id = 0  # Shared ID counter
+        self.student_id = [0]  # Shared ID counter as list for mutability
 
         # Initialize modules
         self.face_recognizer = FaceRecognition()

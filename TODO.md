@@ -1,6 +1,4 @@
-# TODO for Gesture Recognition Fix
-
-- [x] Replace background subtraction with skin color detection in detect_hand_gesture method
-- [x] Lower contour area threshold from 5000 to 2000
-- [x] Add debugging prints for contour areas and gesture detection
-- [x] Test real_time_gesture_recognition to verify gestures are detected (skipped by user)
+- [x] Add gesture_history buffer to GestureRecognition class
+- [x] Modify detect_hand_gesture to use buffer for stable gesture output
+- [x] Tune detection parameters: increase min contour area, defect distance, add blur
+- [ ] Test real-time gesture recognition for stability

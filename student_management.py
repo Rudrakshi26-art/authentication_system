@@ -4,7 +4,7 @@ import os
 class StudentManagement:
     def __init__(self, students_list, student_id_counter):
         self.students = students_list
-        self.student_id = student_id_counter
+        self.student_id_counter = student_id_counter
 
     def add_student_window(self, root):
         """Open window to add new student"""
@@ -45,8 +45,9 @@ class StudentManagement:
             return
 
         # Store in list with ID
-        self.students.append({"id": self.student_id, "name": name, "roll": roll, "dept": dept})
-        self.student_id += 1
+        id = self.student_id_counter[0]
+        self.students.append({'id': id, 'name': name, 'roll': roll, 'dept': dept})
+        self.student_id_counter[0] += 1
 
         messagebox.showinfo("Success", f"Student {name} (Roll: {roll}, Dept: {dept}) added successfully!")
         self.new_window.destroy()

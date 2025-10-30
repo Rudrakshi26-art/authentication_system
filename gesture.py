@@ -8,6 +8,8 @@ class GestureRecognition:
         # Skin color detection parameters
         self.lower_skin = np.array([0, 20, 70], dtype=np.uint8)
         self.upper_skin = np.array([20, 255, 255], dtype=np.uint8)
+        # Gesture history for stability
+        self.gesture_history = []
 
     def detect_hand_gesture(self, frame):
         """Detect basic hand gestures"""
@@ -16,6 +18,9 @@ class GestureRecognition:
 
         # Create skin mask
         skin_mask = cv2.inRange(hsv, self.lower_skin, self.upper_skin)
+
+        # Apply Gaussian blur to reduce noise
+        skin_mask = cv2.GaussianBlur(skin_mask, (5, 5), 0)
 
         # Apply morphological operations to clean up the mask
         kernel = np.ones((5, 5), np.uint8)
@@ -30,7 +35,7 @@ class GestureRecognition:
         gesture = "No Gesture"
 
         for contour in contours:
-            if cv2.contourArea(contour) > 2000:  # Minimum area threshold
+            if cv2.contourArea(contour) > 3000:  # Minimum area threshold
                 # Get bounding rectangle
                 x, y, w, h = cv2.boundingRect(contour)
 
@@ -55,7 +60,7 @@ class GestureRecognition:
                             c = math.sqrt((end[0] - far[0]) ** 2 + (end[1] - far[1]) ** 2)
                             angle = math.acos((b ** 2 + c ** 2 - a ** 2) / (2 * b * c)) * 57
 
-                            if angle <= 90 and d > 10000:
+                            if angle <= 90 and d > 15000:
                                 finger_count += 1
 
                         if finger_count == 0:
@@ -74,7 +79,15 @@ class GestureRecognition:
         if gesture != "No Gesture":
             print(f"Detected gesture: {gesture}")  # Debugging
 
-        return frame, gesture
+        # Add gesture to history buffer
+        self.gesture_history.append(gesture)
+        if len(self.gesture_history) > 10:
+            self.gesture_history.pop(0)
+
+        # Determine stable gesture by majority vote
+        stable_gesture = max(set(self.gesture_history), key=self.gesture_history.count)
+
+        return frame, stable_gesture
 
     def real_time_gesture_recognition(self):
         """Real-time gesture recognition"""
